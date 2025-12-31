@@ -1,0 +1,20 @@
+# Ignore Data Files (We don't want CSVs on GitHub)
+data/
+logs/
+
+# Ignore Python Cache
+__pycache__/
+*.pyc
+
+# Ignore Environment Variables (Security!)
+.env
+.venv
+env/
+
+# Ignore Mac/Windows system files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE settings
+.vscode/
+.idea/
