@@ -15,7 +15,7 @@ Unlike standard ETL scripts, this project utilizes **Apache Airflow** as the cen
 *(From API Telemetry to Operational Dashboard)*
 <img width="1341" height="5224" alt="Untitled diagram-2026-01-07-054356" src="https://github.com/user-attachments/assets/b479dfb0-3d4c-4945-a3e3-834f3d91c294" />
 
-*(Note: Generate the diagram using the Mermaid code provided previously and save it as architecture_flights.png)*
+
 
 The pipeline follows a Medallion Architecture pattern, processing data through specific stages as defined below:
 
