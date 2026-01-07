@@ -1,13 +1,12 @@
 
 #  Real-Time Flight Operations Analytics Pipeline
 
-This project simulates a solution for an Aviation Analytics and Operations Department. The goal is to monitor flight patterns to aid in decision-making. The project is designed to be "Airflow Native," meaning Apache Airflow is the primary driver for orchestration, while Python is used for data transformation. The final output is a dashboard in Snowflake that visualizes key performance indicators (KPIs) regarding flight activities.
-A near real-time, fully Airflow-native end-to-end data engineering project. This pipeline sources real flight data from the OpenSky Network API rather than using mock data. The system handles extraction, cleaning, transformation, and loading (ETL) entirely within Apache Airflow, culminating in a Snowflake dashboard for aviation analytics.
+This project simulates a solution for an Aviation Analytics and Operations Department. The goal is to monitor near real-time flight patterns to aid in decision-making. The project is designed to be "Airflow Native," meaning Apache Airflow is the primary driver for orchestration, utilizing a modular **Dockerized** architecture for reproducibility while Python is used for data transformation. The final output is a dashboard in Snowflake that visualizes key performance indicators (KPIs) regarding flight activities.
+This pipeline sources real flight data from the OpenSky Network API rather than using mock data. The system handles extraction, cleaning, transformation, and loading (ETL) entirely within Apache Airflow, culminating in a Snowflake dashboard for aviation analytics.
 
 ###  Project Overview
 Optimizing airline operations requires analyzing telemetry data (Altitude, Velocity, Geo-Location) in near real-time. This project is an **Airflow-Native ELT Pipeline** that extracts live flight data from the **OpenSky Network API**, processes it for operational insights, and visualizes airspace density.
 
-Unlike standard ETL scripts, this project utilizes **Apache Airflow** as the central engine for both orchestration and data processing, utilizing a modular **Dockerized** architecture for reproducibility.
 
 ---
 
@@ -16,8 +15,7 @@ Unlike standard ETL scripts, this project utilizes **Apache Airflow** as the cen
 <img width="1341" height="5224" alt="Untitled diagram-2026-01-07-054356" src="https://github.com/user-attachments/assets/b479dfb0-3d4c-4945-a3e3-834f3d91c294" />
 
 
-
-The pipeline follows a Medallion Architecture pattern, processing data through specific stages as defined below:
+The pipeline follows a Medallion Architecture pattern:
 
 1.  **Source (API):** Data is extracted from the OpenSky Network API, providing real-time flight telemetry. **OpenSky Network API** (Live REST API).
 2.  **Bronze Layer (Raw Ingestion):** The raw data pulled from the API is stored locally as a JSON file. This serves as the raw history.
@@ -56,6 +54,21 @@ Flight data is often messy (null sensors, duplicate signals). The Silver layer h
 * **Imputation:** Handling missing altitude data ensuring downstream aggregations remain accurate.
 
 ---
+###  Engineering Challenges & Solutions
+
+#### 1. The "Thundering Herd" Problem (API Rate Limits)
+The OpenSky API has strict rate limits. Early iterations of the pipeline crashed frequently with `429: Too Many Requests`.
+* **Solution:** I implemented **Exponential Backoff** strategies within the Airflow Tasks.
+* **Logic:** If the API fails, the task waits 30s, then 60s, then 120s before retrying. This "politeness" ensures high availability without getting our IP banned.
+
+#### 2. Handling Telemetry "Ghosting" (Signal Loss)
+Real-world flight data is imperfect. Planes flying over oceans or mountains often stop transmitting ADS-B signals for minutes, resulting in `NULL` lat/lon values or "teleporting" planes.
+* **Solution:** Implemented a **Data Cleaning Layer (Silver)** using Pandas to drop records with incomplete geospatial coordinates (`lat/lon IS NULL`) before they reach the warehouse, ensuring the analytics dashboard only reflects verified flight paths.
+
+#### 3. Airflow Docker Networking
+Running Airflow in Docker is complex because the *Worker* needs to talk to the *Scheduler*, *Webserver*, and *Postgres Metadata DB*.
+* **Solution:** Utilized a custom `docker-compose` network bridge to isolate the Airflow internal components from the external API extraction logic, ensuring container security and stability.
+
 
 ###  Operational Impact
 * **Visibility:** Provides real-time visibility into active flights for operational planning.
@@ -64,6 +77,7 @@ Flight data is often messy (null sensors, duplicate signals). The Silver layer h
 
 ---
 
+ 
 ## How to Run
 1.  Clone the repository.
 2.  Ensure Docker is installed and running.
