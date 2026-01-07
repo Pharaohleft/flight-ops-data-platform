@@ -1,4 +1,4 @@
-# ✈️ Flight Ops Data Platform
+#  Flight Ops Data Platform
 # Flight Operations Data Engineering Project
 
 A near real-time, fully Airflow-native end-to-end data engineering project. This pipeline sources real flight data from the OpenSky Network API rather than using mock data. The system handles extraction, cleaning, transformation, and loading (ETL) entirely within Apache Airflow, culminating in a Snowflake dashboard for aviation analytics.
@@ -7,6 +7,8 @@ A near real-time, fully Airflow-native end-to-end data engineering project. This
 This project simulates a solution for an Aviation Analytics and Operations Department. The goal is to monitor flight patterns to aid in decision-making. The project is designed to be "Airflow Native," meaning Apache Airflow is the primary driver for orchestration, while Python is used for data transformation. The final output is a dashboard in Snowflake that visualizes key performance indicators (KPIs) regarding flight activities.
 
 ## Architecture and Workflow
+<img width="1341" height="5224" alt="Untitled diagram-2026-01-07-054356" src="https://github.com/user-attachments/assets/b479dfb0-3d4c-4945-a3e3-834f3d91c294" />
+
 The pipeline follows a Medallion Architecture pattern, processing data through specific stages as defined below:
 
 1.  **Source (API):** Data is extracted from the OpenSky Network API, providing real-time flight telemetry.
