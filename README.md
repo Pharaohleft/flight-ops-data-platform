@@ -11,7 +11,7 @@ Optimizing airline operations requires analyzing telemetry data (Altitude, Veloc
 ---
 
 ###  System Architecture
-*(From API Telemetry to Operational Dashboard)*
+
 <img width="1341" height="5224" alt="Untitled diagram-2026-01-07-054356" src="https://github.com/user-attachments/assets/b479dfb0-3d4c-4945-a3e3-834f3d91c294" />
 
 
